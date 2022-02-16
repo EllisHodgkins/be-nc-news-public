@@ -18,3 +18,20 @@ exports.selectArticleById = (id) => {
     return result.rows;
   })
 };
+
+exports.selectUsers = () => {
+  return db.query(`SELECT * FROM users;`).then((result) => {
+    const userArray = []
+    const users = result.rows
+    users.map(user => {
+      userArray.push( {username : user.username })
+    })
+    return userArray;
+  });
+};
+
+exports.selectArticles = () => {
+  return db.query(`SELECT * FROM articles ORDER BY created_at DESC;`).then((result) => {
+    return result.rows;
+  });
+};

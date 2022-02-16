@@ -1,35 +1,29 @@
 const {
-    selectTopics, selectArticleById
+    selectTopics, selectArticleById, selectUsers, selectArticles
   } = require("../models/news-models");
   
-exports.getTopics = (req, res, err) => {
+exports.getTopics = (req, res, next) => {
     selectTopics().then((topics) => {
         res.status(200).send({topics});
     })
-    .catch((err) => {
-        console.log(err)
-    })
-    };
+    .catch(next)};
 
 exports.getArticleById = (req, res, next) => {
     const id = req.params.article_id;
     selectArticleById(id).then((article) => {
-        res.status(200).send({article})
+        res.status(200).send(article[0])
     }).catch(next);
 }
 
+exports.getUsers = (req, res, next) => {
+    selectUsers().then((users) => {
+        res.status(200).send(users);
+    })
+    .catch(next)
+    };
 
-    //error handling
-
-
-    exports.handlesInvalidInput = (err, req, res, next) => {
-        if (err.status && err.msg) {
-            res.status(err.status).send({msg: err.msg})
-        } else {
-            next(err)
-        }
-    }
-
-    exports.handlesInvalidPath = (req, res) => {
-        res.status(404).send({msg : "404 - path not found"})
+    exports.getArticles = (req, res, next) => {
+        selectArticles().then((articles) => {
+            res.status(200).send(articles)
+        }).catch(next);
     }
