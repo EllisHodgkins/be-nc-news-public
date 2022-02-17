@@ -91,7 +91,7 @@ describe("getUsers", () => {
       .then((response) => {
         expect(response.body).toBeInstanceOf(Array);
         response.body.forEach((user) => {
-          expect(user).toEqual( 
+          expect(user).toEqual(
             expect.objectContaining({
               username: expect.any(String),
             })
@@ -116,23 +116,22 @@ describe("getArticles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        console.log(response.body)
-        expect(response.body).toBeSortedBy("created_at", {descending: true});
+        expect(response.body).toBeSortedBy("created_at", { descending: true });
         response.body.forEach((article) => {
-        expect(article).toEqual(
-          expect.objectContaining({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            body: expect.any(String),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-          })
-        );
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
       });
-      })
-    })
+  });
 
   test("should respond with 404 path not found", () => {
     return request(app)
@@ -140,6 +139,55 @@ describe("getArticles", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("404 - path not found");
-      })
-    })
-  })
+      });
+  });
+});
+
+describe("getArticleComments", () => {
+  test("Responds with articles comments when given article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        response.body.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              article_id: 1,
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("Responds with articles comments when given article_id", () => {
+    return request(app)
+      .get("/api/articles/6/comments")
+      .expect(200)
+      .then((response) => {
+        response.body.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              article_id: 6,
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  test("should respond with 400 ID not a number", () => {
+    return request(app)
+      .get("/api/articles/blarg69/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("400 - article ID must be a number!");
+      });
+  });
+});

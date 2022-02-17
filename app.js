@@ -4,7 +4,8 @@ const {
     getTopics,
     getArticleById,
     getUsers,
-    getArticles
+    getArticles,
+    getComments
 } = require("./controllers/news-controller");
 
 const {
@@ -19,6 +20,7 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById)
 app.get("/api/users", getUsers)
 app.get("/api/articles", getArticles)
+app.get("/api/articles/:article_id/comments", getComments)
 
 app.all("/*", handlesInvalidPath);
 app.use(handlesInvalidInput);
