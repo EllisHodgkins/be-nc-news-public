@@ -5,6 +5,8 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
+const { topicData } = require("../db/data/test-data/index");
+const { articleData } = require("../db/data/test-data/index");
 
 beforeEach(() => {
   return seed(testData);
@@ -20,20 +22,15 @@ describe("getTopics", () => {
       .get("/api/topics")
       .expect(200)
       .then((response) => {
-        expect(response.body.topics).toEqual([
-          {
-            description: "The man, the Mitch, the legend",
-            slug: "mitch",
-          },
-          {
-            description: "Not dogs",
-            slug: "cats",
-          },
-          {
-            description: "what books are made of",
-            slug: "paper",
-          },
-        ]);
+        expect(response.body.topics.length).toBe(topicData.length);
+        response.body.topics.forEach((response) => {
+          expect(response).toEqual(
+            expect.objectContaining({
+              description: expect.any(String),
+              slug: expect.any(String),
+            })
+          );
+        });
       });
   });
   test("should respond with 404 path not found", () => {
@@ -47,6 +44,40 @@ describe("getTopics", () => {
 });
 
 describe("getArticles", () => {
+  test("Responds with all articles in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        console.log(response.body);
+        expect(response.body.length).toBe(articleData.length);
+        expect(response.body).toBeSortedBy("created_at", { descending: true });
+        response.body.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("should respond with 404 path not found", () => {
+    return request(app)
+      .get("/api/articlez")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("404 - path not found");
+      });
+  });
+});
+
+describe("getArticlesByID", () => {
   test("Responds with the required first article", () => {
     return request(app)
       .get("/api/articles/1")
@@ -65,7 +96,7 @@ describe("getArticles", () => {
         );
       });
   });
-  test("should respond with 404 path not found", () => {
+  test("should respond with 404 article not found", () => {
     return request(app)
       .get("/api/articles/112222222222222222")
       .expect(404)
@@ -78,7 +109,7 @@ describe("getArticles", () => {
       .get("/api/articles/1n2n3n4n")
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("400 - article ID must be a number!");
+        expect(msg).toBe("400 - Does not match article ID type!");
       });
   });
 });
@@ -103,39 +134,6 @@ describe("getUsers", () => {
   test("should respond with 404 path not found", () => {
     return request(app)
       .get("/api/userz")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("404 - path not found");
-      });
-  });
-});
-
-describe("getArticles", () => {
-  test("Responds with all articles in descending order", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toBeSortedBy("created_at", { descending: true });
-        response.body.forEach((article) => {
-          expect(article).toEqual(
-            expect.objectContaining({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              body: expect.any(String),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-            })
-          );
-        });
-      });
-  });
-
-  test("should respond with 404 path not found", () => {
-    return request(app)
-      .get("/api/articlez")
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("404 - path not found");
