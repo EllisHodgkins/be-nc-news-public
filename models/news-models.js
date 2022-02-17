@@ -32,13 +32,21 @@ exports.selectUsers = () => {
 
 exports.selectArticles = () => {
   return db.query(`SELECT * FROM articles ORDER BY created_at DESC;`).then((result) => {
-    return result.rows;
+    const articles = result.rows;
+    const mappedArticles = []
+    if(articles.length === 0) {
+      return Promise.reject({status: 404, msg: "404 - No articles"}); 
+    }
+    articles.map(article => {
+      mappedArticles.push({author: article.author, title: article.title, article_id: article.article_id, topic: article.topic, created_at: article.created_at, votes: article.votes})
+    })
+    return mappedArticles;
   });
 };
 
 exports.selectArticleById = (id) => {
   if (isNaN(id))
-    return Promise.reject({status: 400, msg: "400 - article ID must be a number!"});
+    return Promise.reject({status: 400, msg: "400 - Does not match article ID type!"});
   
   return db.query(`SELECT * FROM articles WHERE article_id = ${id};`).then((result) => {
     const article = result.rows;
