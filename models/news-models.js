@@ -15,6 +15,7 @@ exports.selectArticleById = (id) => {
     if(article.length === 0) {
       return Promise.reject({status: 404, msg: "404 - article not found"}); 
     }
+    console.log(result.rows,'modelllllllllll')
     return result.rows;
   })
 };
@@ -69,3 +70,10 @@ exports.selectComments = (id => {
       return result.rows;
     })
 })
+
+exports.deleteComment = (id => {
+  if (isNaN(id))
+    return Promise.reject({status: 400, msg: "400 - comment ID must be a number!"});
+
+    return db.query(`DELETE FROM comments WHERE comment_id = ${id};`)
+    });

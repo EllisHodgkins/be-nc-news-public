@@ -1,5 +1,5 @@
 const {
-    selectTopics, selectArticleById, selectUsers, selectArticles, selectComments
+    selectTopics, selectArticleById, selectUsers, selectArticles, selectComments, deleteComment
   } = require("../models/news-models");
   
 exports.getTopics = (req, res, next) => {
@@ -36,3 +36,11 @@ exports.getComments = (req, res, next) => {
     })
     .catch(next)
 };
+
+exports.deleteComment = (req, res, next) => {
+    const id = req.params.comment_id;
+    deleteComment(id).then((comment) => {
+        res.status(204).send("204 - no content")
+    })
+    .catch(next)
+}

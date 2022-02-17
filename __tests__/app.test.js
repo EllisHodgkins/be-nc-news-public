@@ -49,7 +49,6 @@ describe("getArticles", () => {
       .get("/api/articles")
       .expect(200)
       .then((response) => {
-        console.log(response.body);
         expect(response.body.length).toBe(articleData.length);
         expect(response.body).toBeSortedBy("created_at", { descending: true });
         response.body.forEach((article) => {
@@ -83,6 +82,7 @@ describe("getArticlesByID", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((articles) => {
+        console.log(articles.body)
         expect(articles.body).toEqual(
           expect.objectContaining({
             author: expect.any(String),
@@ -187,5 +187,13 @@ describe("getArticleComments", () => {
       .then(({ body: { msg } }) => {
         expect(msg).toBe("400 - article ID must be a number!");
       });
+  });
+});
+
+describe('Delete given comment based on ID responding with 204 status and no content.', () => {
+    test('should delete the given comment and have status 204', () => {
+      return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
   });
 });
