@@ -40,7 +40,7 @@ exports.getComments = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
     const id = req.params.comment_id;
     deleteComment(id).then((comment) => {
-        res.status(204).send("204 - no content")
+        res.sendStatus(204)
     })
     .catch(next)
 }
