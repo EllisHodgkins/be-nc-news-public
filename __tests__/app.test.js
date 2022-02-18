@@ -189,3 +189,39 @@ describe("getArticleComments", () => {
       });
   });
 });
+
+describe('Post comment on article', () => {
+  test('should return an object with username and body - status 201', () => {
+    const postArticle = {
+      author: "butter_bridge",
+      body: "Blah blahblah blah",
+    }
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(postArticle)
+    .expect(201)
+    .then((response) => {
+      expect(response.body.comment).toEqual({
+        comment_id: 19,
+        body: 'Blah blahblah blah',
+        article_id: 1,
+        author: 'butter_bridge',
+        votes: 0,
+        created_at: expect.any(String)
+      })
+      }
+    )}
+  )
+  test("should respond with 404 user not found", () => {
+    const postArticle = {
+      author: "not_a_user38472",
+      body: "Blah blahblah blah",
+    }
+    return request(app)
+      .post("/api/articles/1/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("404 - user not found");
+      });
+  })
+})
