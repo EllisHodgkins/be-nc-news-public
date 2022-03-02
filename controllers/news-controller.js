@@ -1,5 +1,5 @@
 const {
-    selectTopics, selectArticleById, selectUsers, selectArticles, selectComments, deleteComment
+    selectTopics, selectArticleById, selectUsers, selectArticles, selectComments, deleteComment, patchVotes
   } = require("../models/news-models");
   
 exports.getTopics = (req, res, next) => {
@@ -43,4 +43,8 @@ exports.deleteComment = (req, res, next) => {
         res.sendStatus(204)
     })
     .catch(next)
+}
+
+exports.patchVotes = (req, res, next) => {
+    
 }

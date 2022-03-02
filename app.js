@@ -6,7 +6,8 @@ const {
     getUsers,
     getArticles,
     getComments,
-    deleteComment
+    deleteComment,
+    patchVotes
 } = require("./controllers/news-controller");
 
 const {
@@ -23,6 +24,7 @@ app.get("/api/users", getUsers)
 app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id/comments", getComments)
 app.delete("/api/comments/:comment_id", deleteComment)
+app.patch("/api/articles/:article_id", patchVotes)
 
 app.all("/*", handlesInvalidPath);
 app.use(handlesInvalidInput);

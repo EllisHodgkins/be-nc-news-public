@@ -77,3 +77,4 @@ exports.deleteComment = (id => {
 
     return db.query(`DELETE FROM comments WHERE comment_id = ${id};`)
     });
+

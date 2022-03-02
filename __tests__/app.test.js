@@ -82,7 +82,7 @@ describe("getArticlesByID", () => {
       .get("/api/articles/1")
       .expect(200)
       .then((articles) => {
-        console.log(articles.body)
+        console.log(articles.body);
         expect(articles.body).toEqual(
           expect.objectContaining({
             author: expect.any(String),
@@ -190,10 +190,28 @@ describe("getArticleComments", () => {
   });
 });
 
-describe('Delete given comment based on ID responding with 204 status and no content.', () => {
-    test('should delete the given comment and have status 204', () => {
-      return request(app)
-      .delete("/api/comments/1")
-      .expect(204)
+describe("Delete given comment based on ID responding with 204 status and no content.", () => {
+  test("should delete the given comment and have status 204", () => {
+    return request(app).delete("/api/comments/1").expect(204);
   });
+});
+
+describe('PATCH /api/articles/:article_id', () => {
+  it('status 200: responds with the updated article with vote count increased by 1', (
+  ) => {    const articleUpdates = { inc_votes: 1 };    
+  return request(app)    
+  .patch('/api/articles/1')    
+  .send(articleUpdates)    
+  .expect(200)    
+  .then(({ body }) => {    
+    expect(body.article).toEqual({    
+      article_id: 1,    
+      title: "Living in the shadow of a great man",   
+       topic: "mitch",   
+        author: "butter_bridge",  
+          body: "I find this existence challenging",  
+            created_at: "2020-07-09T20:11:00.000Z",    
+            votes: 101,    
+});    
+});      
 });
